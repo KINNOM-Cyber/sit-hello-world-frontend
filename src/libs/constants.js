@@ -21,10 +21,6 @@ export const buildings = [
   },
   {
     id: 6,
-    name: "SIT Building (4th Floor)",
-  },
-  {
-    id: 7,
     name: "CB",
   },
 ];

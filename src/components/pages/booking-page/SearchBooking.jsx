@@ -72,6 +72,8 @@ export default function SearchBooking({ onChange = () => {} }) {
     return value;
   };
 
+  
+
   // Normalize hours and minutes to prevent invalid values
 
   // Handle input changes and real-time validation
