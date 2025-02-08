@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -8,16 +8,8 @@ import {
   SelectValue,
 } from "../../ui/Select";
 import { Button } from "../../ui/Button";
-import {
-  // BookIcon,
-  CalendarIcon,
-  InfoIcon,
-  SearchIcon,
-  XIcon,
-} from "lucide-react";
 // import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popover";
-import { format } from "date-fns";
-import { cn, normalizeTime, timeStrToDate } from "../../../libs/utils";
+import { normalizeTime } from "../../../libs/utils";
 import { Calendar } from "../../ui/Calendar";
 import { Input } from "../../ui/Input";
 // import { Label } from "../ui/Label";
@@ -29,24 +21,7 @@ export default function SearchBooking({ onChange = () => {} }) {
   const [date, setDate] = useState(new Date());
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [openPopover, setOpenPopover] = useState(false);
-
-  // const buildings = [{
-
-  // }
-  //   "LX Building (10th Floor)",
-  //   "LX Building (11th Floor)",
-  //   "LX Building (12th Floor)",
-  //   "SIT Building (1st Floor)",
-  //   "SIT Building (3rd Floor)",
-  //   "SIT Building (4th Floor)",
-  //   "CB",
-  // ];
-
-  const handleResetBtnClick = () => {
-    setFilter("");
-  };
-
+  
   const formatTime = (value) => {
     // Remove any non-digit characters
     value = value.replace(/\D/g, "");
@@ -154,10 +129,6 @@ export default function SearchBooking({ onChange = () => {} }) {
     });
   };
 
-  // useEffect(() => {
-  //   onChange({ filter, date, startTime, endTime });
-  // }, [filter]);
-
   return (
     <div className="flex w-full justify-between items-center rounded-3xl p-4 bg-black/30 backdrop-blur-2xl">
       {/* <p className="text-white">Available {available} rooms</p> */}
@@ -167,10 +138,6 @@ export default function SearchBooking({ onChange = () => {} }) {
           <span className="text-white font-bold ml-3 text-lg">SIT BOOKING</span>
         </div>
 
-        {/* <p className="text-muted/50 font-medium text-sm">
-          available 12 locations
-        </p> */}
-        {/* http://localhost:5173/booking?bId=2&date=%7B%22from%22%3A%222025-01-25T17%3A00%3A00.000Z%22%2C%22to%22%3A%222025-02-21T17%3A00%3A00.000Z%22%7D&startTime=12%3A31&endTime=00%3A13 */}
         <div className="w-full flex justify-center">
           <Calendar mode="single" selected={date} onSelect={setDate} />
         </div>
@@ -191,12 +158,6 @@ export default function SearchBooking({ onChange = () => {} }) {
             onChange={handleOnEndTimeChange}
             placeholder="HH:MM"
           />
-          {/* <Button
-            onClick={handleSubmit}
-            className="cursor-pointer bg-amber-300 h-11 hover:bg-amber-300 text-black"
-          >
-            Submit
-          </Button> */}
         </div>
         <div className="w-full">
             <Select value={buildingId} onValueChange={setBuildingId}>

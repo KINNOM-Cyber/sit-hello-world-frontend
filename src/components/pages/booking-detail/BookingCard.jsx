@@ -46,6 +46,7 @@ export default function BookingCard({ data, startTime, endTime, date }) {
         </div>
       </div>
       <BookingForm
+        buildingId={data.id}
         rooms={data.rooms}
         date={date}
         startTime={startTime}

@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import MobileLayout from "../components/layout/MobileLayout";
 import BookingCard from "../components/pages/my-booking/BookingCard";
 import { Button } from "../components/ui/Button";
-import { buildings } from "../libs/constants";
+import { buildings, rooms } from "../libs/constants";
 import { BookPlusIcon } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function MyBookingPage() {
   const [bookings, setBookings] = useState();
+  const navigate = useNavigate();
+
+  const stroages = useMemo(() => {
+    const keys = Object.keys(localStorage);
+    return keys.map((key) => JSON.parse(localStorage.getItem(key)));
+  }, [localStorage]);
+
+  console.log(stroages)
 
   const greetingMessage = () => {
     const time = new Date().getHours();
@@ -38,23 +47,44 @@ export default function MyBookingPage() {
           </span>
         </div>
         <div className="flex mt-5 flex-col space-y-4 mb-4">
-          <BookingCard
-            location={buildings[0].name}
-            room="LX10/2"
-            date="2025-02-06"
-            startTime="09:00"
-            endTime="12:00"
-            name="Kittihengcharoen"
-            description="Project"
-          />
+          {stroages.length > 0 ? (
+            stroages.map((item) => {
+              const building = buildings.find(
+                (building) => building.id == item.buildingId
+              );
+              const room = rooms.find((room) => room.id == item.roomId);
+              return (
+                <BookingCard
+                  location={building.name}
+                  room={room.code}
+                  date={item.date}
+                  startTime={item.startTime}
+                  endTime={item.endTime}
+                  name={item.name}
+                  description={item.description}
+                  bookingId={item.BookingId}
+                />
+              );
+            })
+          ) : (
+            <div className="flex flex-col mt-[30%] space-y-2 items-center text-center justify-center leading-12">
+              <h2 className="text-xl font-bold text-white">
+                You didn't have any booking
+              </h2>
+              <p className="text-muted/80 text-sm">
+                You can craete booking by clicking the{" "}
+                <strong>'Create a new booking'</strong> button below
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex w-full mt-auto">
           <Button
-            //   onClick={handleSubmit}
+            onClick={() => navigate({ to: "/booking" })}
             className=" uppercase cursor-pointer bg-black/30 te w-full backdrop-blur-3xl h-12 "
           >
             Craete a new booking
-            <BookPlusIcon className="ml-4 text-muted/70"/>
+            <BookPlusIcon className="ml-4 text-muted/70" />
           </Button>
         </div>
       </div>

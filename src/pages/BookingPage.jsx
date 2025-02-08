@@ -1,34 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
 import MobileLayout from "../components/layout/MobileLayout";
-import ToolBar from "../components/pages/booking-page/SearchBooking";
-import Card from "../components/pages/booking-page/Card";
-import { useNavigate, useSearch } from "@tanstack/react-router";
-import { BookCheckIcon, BookIcon, ChevronRight, InfoIcon } from "lucide-react";
-import { timeStrToDate } from "../libs/utils";
-import { Button } from "../components/ui/Button";
-import Badge from "../components/ui/Badge";
+import { useNavigate } from "@tanstack/react-router";
+import { BookCheckIcon } from "lucide-react";
 import SearchBooking from "../components/pages/booking-page/SearchBooking";
 import { format } from "date-fns";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import BookingCard from "../components/pages/booking-page/BookingCard";
 import { useBookingDetail } from "../contexts/useBookingDetail";
 
 export default function BookingPage() {
   const navigate = useNavigate();
-  const { setData: setBookingData } = useBookingDetail();
+  const { setData: setBookingData, reset } = useBookingDetail();
   const [data, setData] = useState();
   const [error, setError] = useState(null);
 
   const handleOnSuccess = (data) => {
-    setData(data);
-    setBookingData(data);
+    console.log(data);
+    if (!error) {
+      setData(data);
+      setBookingData(data);
+    }
   };
 
   const { isPending, mutate, isError, isSuccess } = useMutation({
     onSuccess: handleOnSuccess,
     onError: setError,
     mutationFn: async ({ bId, date, startTime, endTime }) => {
-      const endpointUrl = new URL("http://localhost:3000/booking/find");
+      const endpointUrl = new URL("http://helloworld11.sit.kmutt.ac.th:3000/booking/find");
       const searchParams = endpointUrl.searchParams;
 
       searchParams.append("buildingId", bId);
@@ -45,8 +43,10 @@ export default function BookingPage() {
       });
       const response = await request.json();
 
-      if (!response.ok) {
+      if (request.status != 200) {
         setError(response);
+      } else {
+        setError(null);
       }
 
       return response;
@@ -110,21 +110,23 @@ export default function BookingPage() {
               <p className="text-white">Loading ...</p>
             </div>
           ) : (
-            isError ||
-            (error && (
+            error && (
               <div>
                 <p className="text-white">{error.message}</p>
               </div>
-            ))
+            )
           )}
-          {data && (
+          {!error&& data && (
             <BookingCard
               data={data.response}
               bId={data.payload.buildingId}
               startTime={data.payload.startTime}
               endTime={data.payload.endTime}
               date={new Date(data.payload.date)}
-              onCancel={() => setData()}
+              onCancel={() => {
+                setData();
+                reset();
+              }}
             />
           )}
         </div>
